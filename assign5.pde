@@ -106,7 +106,7 @@ void initGame(){
 	initCabbages();
 
 	// Requirement #2: Initialize clocks and their position
-
+  initClocks();
 }
 
 void initPlayer(){
@@ -193,6 +193,19 @@ void initCabbages(){
 void initClocks(){
 	// Requirement #1: Complete this method based on initCabbages()
 	// - Remember to reroll if the randomized position has a cabbage on the same soil!
+  clockX = new float[6];
+  clockY = new float[6];
+
+  for(int i = 0; i < clockX.length; i++){
+    clockX[i] = SOIL_SIZE * floor(random(SOIL_COL_COUNT));
+    clockY[i] = SOIL_SIZE * ( i * 4 + floor(random(4)));
+    
+    if(clockX[i]==cabbageX[i] && clockY[i]==cabbageY[i]){
+      clockX[i] = SOIL_SIZE * floor(random(SOIL_COL_COUNT));
+      clockY[i] = SOIL_SIZE * ( i * 4 + floor(random(4)));
+    }
+  }
+  
 }
 
 void draw() {
@@ -286,22 +299,25 @@ void draw() {
 			image(cabbage, cabbageX[i], cabbageY[i]);
 
 			// Requirement #3: Use boolean isHit(...) to detect collision
-			if(playerHealth < PLAYER_MAX_HEALTH
-			&& cabbageX[i] + SOIL_SIZE > playerX    // r1 right edge past r2 left
-		    && cabbageX[i] < playerX + SOIL_SIZE    // r1 left edge past r2 right
-		    && cabbageY[i] + SOIL_SIZE > playerY    // r1 top edge past r2 bottom
-		    && cabbageY[i] < playerY + SOIL_SIZE) { // r1 bottom edge past r2 top
-
-				playerHealth ++;
+			if(isHit(cabbageX[i], cabbageY[i], cabbageX[i]+SOIL_SIZE, cabbageY[i]+SOIL_SIZE, playerX, playerY, playerX+SOIL_SIZE, playerY+SOIL_SIZE)&&playerHealth<PLAYER_MAX_HEALTH) { // r1 bottom edge past r2 top
+        playerHealth ++;
 				cabbageX[i] = cabbageY[i] = -1000;
-
 			}
 
 		}
 
 		// Requirement #1: Clocks
-		// --- Requirement #3: Use boolean isHit(...) to detect clock <-> player collision
+    for(int i = 0; i < clockX.length; i++){
 
+      image(clock, clockX[i], clockY[i]);
+		// --- Requirement #3: Use boolean isHit(...) to detect clock <-> player collision
+    if(isHit(clockX[i], clockY[i], clockX[i]+SOIL_SIZE, clockY[i]+SOIL_SIZE, playerX, playerY, playerX+SOIL_SIZE, playerY+SOIL_SIZE)) { // r1 bottom edge past r2 top
+        clockX[i]=-1000;
+        addTime(15*60);
+      }
+    }
+    
+    
 		// Groundhog
 
 		PImage groundhogDisplay = groundhogIdle;
@@ -541,10 +557,16 @@ void drawTimerUI(){
 }
 
 void addTime(float seconds){					// Requirement #2
+  gameTimer+=seconds;
 }
 
 boolean isHit(float ax, float ay, float aw, float ah, float bx, float by, float bw, float bh){
-	return false;								// Requirement #3
+	
+  if(ax<bx+bw && ax+aw>bx && ay<by+bh && ay+ah>by){
+    return true;
+  }else{
+    return false;
+  }								// Requirement #3
 }
 
 String convertFramesToTimeString(int frames){	// Requirement #4
