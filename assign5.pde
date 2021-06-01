@@ -299,7 +299,7 @@ void draw() {
 			image(cabbage, cabbageX[i], cabbageY[i]);
 
 			// Requirement #3: Use boolean isHit(...) to detect collision
-			if(isHit(cabbageX[i], cabbageY[i], cabbageX[i]+SOIL_SIZE, cabbageY[i]+SOIL_SIZE, playerX, playerY, playerX+SOIL_SIZE, playerY+SOIL_SIZE)&&playerHealth<PLAYER_MAX_HEALTH) { // r1 bottom edge past r2 top
+			if(isHit(cabbageX[i], cabbageY[i], SOIL_SIZE, SOIL_SIZE, playerX, playerY, SOIL_SIZE, SOIL_SIZE)&&playerHealth<PLAYER_MAX_HEALTH) { // r1 bottom edge past r2 top
         playerHealth ++;
 				cabbageX[i] = cabbageY[i] = -1000;
 			}
@@ -311,7 +311,7 @@ void draw() {
 
       image(clock, clockX[i], clockY[i]);
 		// --- Requirement #3: Use boolean isHit(...) to detect clock <-> player collision
-    if(isHit(clockX[i], clockY[i], clockX[i]+SOIL_SIZE, clockY[i]+SOIL_SIZE, playerX, playerY, playerX+SOIL_SIZE, playerY+SOIL_SIZE)) { // r1 bottom edge past r2 top
+    if(isHit(clockX[i], clockY[i], SOIL_SIZE, SOIL_SIZE, playerX, playerY, SOIL_SIZE, SOIL_SIZE)) { // r1 bottom edge past r2 top
         clockX[i]=-1000;
         addTime(15*60);
       }
